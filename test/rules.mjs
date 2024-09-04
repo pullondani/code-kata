@@ -13,9 +13,9 @@ D,15`;
 const RULES1 = `
 Item    Unit Price    Special Price
 --------------------------
-A,50 
-B,30,2 for 45
-C,20
-D,15`;
+A,         50 
+B,         30,          2 for 45
+C,         20
+D,         15`;
 
 export { RULES, RULES1 };

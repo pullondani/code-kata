@@ -1,28 +1,75 @@
-import { calculateTotal, Checkout } from "../src/checkout.mjs";
-import { RULES } from "./rules.mjs";
+import { Checkout } from "../src/checkout.mjs";
+import { RULES, RULES1 } from "./rules.mjs";
 
 const assert = (result, expected) => {
-    if (expected === result) {
-        console.log("Success", result);
+    if (result === expected) {
+        console.log("Success");
     } else {
-        console.log(`Failure, ${result} : ${expected}`);
+        console.log(`Failure, ${result}:${expected}`);
     }
 };
 
-const testTotal = (inputs, expected) => {
-    let out = calculateTotal(inputs);
-    assert(out, expected);
-};
-testTotal([], 20);
-
 const testPriceRules = (pricingRules) => {
     let co = new Checkout(pricingRules);
-    assert(!!co.prices, true);
+    assert(!!co.priceMap, true);
 };
 testPriceRules(RULES, []);
 
-const testScanItems = (checkout, item) => {
-    checkout.scan(item);
-    assert(!!checkout.items[0], true);
+const testScanSingleItem = (checkout) => {
+    checkout.scan("A");
+    assert(checkout.total, 50);
+    checkout.scan("AAA");
+    assert(checkout.total, 180);
+    checkout.scan("A");
+    assert(checkout.total, 230);
+    checkout.scan("A");
+    assert(checkout.total, 260);
+
+    console.log(checkout.total, checkout.priceMap, checkout.shopping);
 };
-// testScanItems(new Checkout(RULES), "A");
+testScanSingleItem(new Checkout(RULES));
+
+const testScanDifferentItems = (checkout) => {
+    checkout.scan("A");
+    assert(checkout.total, 50);
+    checkout.scan("B");
+    assert(checkout.total, 80);
+    checkout.scan("AA");
+    assert(checkout.total, 160);
+    checkout.scan("BBB");
+    assert(checkout.total, 220);
+
+    console.log(checkout.total, checkout.priceMap, checkout.shopping);
+};
+testScanDifferentItems(new Checkout(RULES));
+
+const testScanMultipleCheckouts = () => {
+    let checkout = new Checkout(RULES);
+    let checkout1 = new Checkout(RULES1);
+    checkout.scan("A");
+    assert(checkout.total, 50);
+    checkout1.scan("B");
+    assert(checkout1.total, 30);
+    checkout.scan("AA");
+    assert(checkout.total, 130);
+    checkout1.scan("BBB");
+    assert(checkout1.total, 90);
+
+    console.log(checkout.total, checkout1.total);
+};
+testScanMultipleCheckouts();
+
+const testScanInvalid = () => {
+    let checkout = new Checkout(RULES);
+    checkout.scan("E");
+    assert(checkout.total, 0);
+    checkout.scan("B");
+    assert(checkout.total, 30);
+    checkout.scan("AA");
+    assert(checkout.total, 130);
+    checkout.scan("BBB");
+    assert(checkout.total, 190);
+
+    console.log(checkout.total);
+};
+testScanInvalid();
