@@ -3,9 +3,9 @@ import { RULES, RULES1 } from "./rules.mjs";
 
 const assert = (result, expected) => {
     if (result === expected) {
-        console.log("Success");
+        console.log("Passed");
     } else {
-        console.log(`Failure, ${result}:${expected}`);
+        console.log(`Failed, ${result}:${expected}`);
     }
 };
 

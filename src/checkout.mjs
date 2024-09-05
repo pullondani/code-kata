@@ -25,20 +25,20 @@ var parsePrices = (priceRules) => {
  *
  */
 class ItemPrice {
-    constructor(price, quantity = null, special = null) {
+    constructor(price, specialThreshold = null, specialPrice = null) {
         this.price = price;
-        this.quantity = quantity;
-        this.special = special;
+        this.specialThreshold = specialThreshold;
+        this.specialPrice = specialPrice;
     }
 
-    handleSpecial(quantity) {
+    calculateCost(quantity) {
         let total = 0;
 
-        if (this.quantity && this.special) {
-            let quot = Math.floor(quantity / this.quantity);
-            let rem = quantity % this.quantity;
+        if (this.specialThreshold && this.specialPrice) {
+            let quot = Math.floor(quantity / this.specialThreshold);
+            let rem = quantity % this.specialThreshold;
 
-            total += this.special * quot;
+            total += this.specialPrice * quot;
             total += this.price * rem;
         } else {
             total = this.price * quantity;
@@ -69,7 +69,7 @@ class Checkout {
 
         this.shopping.forEach((quantity, item) => {
             if (this.priceMap.has(item)) {
-                this.total += this.priceMap.get(item).handleSpecial(quantity);
+                this.total += this.priceMap.get(item).calculateCost(quantity);
             }
         });
 
