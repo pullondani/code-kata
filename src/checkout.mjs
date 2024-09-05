@@ -30,6 +30,21 @@ class ItemPrice {
         this.quantity = quantity;
         this.special = special;
     }
+
+    handleSpecial(quantity) {
+        let total = 0;
+
+        if (this.quantity && this.special) {
+            let quot = Math.floor(quantity / this.quantity);
+            let rem = quantity % this.quantity;
+
+            total += this.special * quot;
+            total += this.price * rem;
+        } else {
+            total = this.price * quantity;
+        }
+        return total;
+    }
 }
 
 /**
@@ -38,8 +53,8 @@ class ItemPrice {
  * @property {Map<string, ItemPrice>} priceMap
  */
 class Checkout {
-    constructor(priceRules) {
-        this.priceMap = parsePrices(priceRules);
+    constructor(priceRules, handleParsingPrices = parsePrices) {
+        this.priceMap = handleParsingPrices(priceRules);
         this.total = 0;
         this.shopping = new Map();
     }
@@ -53,17 +68,8 @@ class Checkout {
         });
 
         this.shopping.forEach((quantity, item) => {
-            let itemPrice = this.priceMap.get(item);
-            console.log(quantity, item, itemPrice.price, itemPrice.quantity, itemPrice.special);
-
-            if (itemPrice.quantity && itemPrice.special) {
-                let quot = Math.floor(quantity / itemPrice.quantity);
-                let rem = quantity % itemPrice.quantity;
-
-                this.total += itemPrice.special * quot;
-                this.total += itemPrice.price * rem;
-            } else {
-                this.total += itemPrice.price * quantity;
+            if (this.priceMap.has(item)) {
+                this.total += this.priceMap.get(item).handleSpecial(quantity);
             }
         });
 

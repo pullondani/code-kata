@@ -1,4 +1,4 @@
-## Code Kata #09
+## Kata#09: Back to the checkout
 JavaScript based code challenge that allows users to calculate prices at a checkout. 
 
 Input a list of products, prices and specials with the form of:
