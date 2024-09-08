@@ -67,8 +67,8 @@ const testScanInvalid = () => {
     assert(checkout.total, 30);
     checkout.scan("AA");
     assert(checkout.total, 130);
-    checkout.scan("BBB");
-    assert(checkout.total, 190);
+    checkout.scan("BBE");
+    assert(checkout.total, 175);
 
     console.log(checkout.total);
 };
